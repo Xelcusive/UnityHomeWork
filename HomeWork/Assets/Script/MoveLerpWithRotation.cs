@@ -6,11 +6,14 @@ public class MoveLerpWithRotation : MonoBehaviour
 {
     public Transform pointA;
     public Transform pointB;
+    public Transform pointC;
     public float speed = 1f;
     public float rotationSpeed = 180f; // độ/giây
 
     private float t = 0f;
     private bool movingToB = true;
+    private bool movingToC = true;
+    private bool movingToA = true;
 
     void Update()
     {
@@ -23,17 +26,33 @@ public class MoveLerpWithRotation : MonoBehaviour
             {
                 t = 0f;
                 movingToB = false;
+                movingToC = true;
+                movingToA = false;
             }
         }
-        else
+        if (movingToC)
         {
-            transform.position = Vector3.Lerp(pointB.position, pointA.position, t);
+            transform.position = Vector3.Lerp(pointB.position, pointC.position, t);
             if (t >= 1f)
             {
                 t = 0f;
-                movingToB = true;
+                movingToC = false;
+                movingToA = true;
+                movingToB = false;
             }
         }
+        if (movingToA)
+        {
+            transform.position = Vector3.Lerp(pointC.position, pointA.position, t);
+            if (t >= 1f)
+            {
+                t = 0f;
+                movingToC = false;
+                movingToB = true;
+                movingToA = false;
+            }
+        }
+
 
         // Xoay theo chiều kim đồng hồ (âm quanh Z trong hệ tọa độ 2D)
         transform.Rotate(0f, 0f, -rotationSpeed * Time.deltaTime);
